@@ -46,19 +46,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickAddCameraActivity(View view)
+    public void RunAddCameraActivity(View view)
     {
         // Create an Intent to call Second Activity
         Intent intent = new Intent(this, addCamera.class);
 
-        //Create a Bundle (MAP) container to ship data
-        Bundle DataToSend = new Bundle();
-
-        //attach the container to the intent( Empty Bundle being sent over )
-        intent.putExtras(DataToSend);
-
         //starts the activity
-        startActivityForResult(intent, 101);
-
+        startActivity(intent);
     }
 }

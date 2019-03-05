@@ -14,7 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class addCamera extends AppCompatActivity {
     //Global Variables
@@ -24,7 +24,6 @@ public class addCamera extends AppCompatActivity {
     private EditText editTextpassword;
     private Button button;
     SQLiteDatabase db;
-    TextView txtMsg;
     String InputName;
     String InputIP;
     String InputUsername;
@@ -62,13 +61,6 @@ public class addCamera extends AppCompatActivity {
         editTextipaddress.addTextChangedListener(loginTextWatcher);
         editTextUsername.addTextChangedListener(loginTextWatcher);
         editTextpassword.addTextChangedListener(loginTextWatcher);
-
-        // Get the Intent continuing the Bundle sent from MainActivity
-        Intent myLocalIntent= getIntent();
-
-        // Look at the Bundle sent from the MainActivity and update (textview)
-        Bundle BundleReceived = myLocalIntent.getExtras();
-
 
     }
 
@@ -115,10 +107,12 @@ public class addCamera extends AppCompatActivity {
             openDatabase();      // open (create if needed) database
             insertData();        // insert data
             db.close();         // make sure to release the DB
+            Toast.makeText(this, "Camera Added", Toast.LENGTH_SHORT).show();
         }
         catch (Exception e)
         {
             Log.e("\n#Error:"," onCreate: " + e.getMessage());
+            Toast.makeText(this, "Error!", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -195,5 +189,23 @@ public class addCamera extends AppCompatActivity {
             Log.e("\n#Error:", " Sending data to Database: " + e.getMessage());
         }
     }
+    /*******************************************************************************************/
+
+    public void RunIPScannerActivity(View view)
+    {
+        // Create an Intent to call Second Activity
+        Intent intent = new Intent(this, IpScanner.class);
+
+        //starts the activity
+        startActivity(intent);
+    }
+
+    /*******************************************************************************************/
+
+    public void ReturnToMainActivity(View view)
+    {
+        finish();
+    }
+
     /*******************************************************************************************/
 }
