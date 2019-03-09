@@ -40,14 +40,13 @@ public class IpScanner extends AppCompatActivity
         results.setMovementMethod(new ScrollingMovementMethod());
     }
 
-
     /**********************************************************************************************/
-    private static class NetworkSniffTask extends AsyncTask<Void, String, Void>
+    private static class NetworkIPScanner extends AsyncTask<Void, String, Void>
     {
         private static final String TAG = "NetworkSearchIPsTask";
         private WeakReference<Context> mContextRef;
 
-        private NetworkSniffTask(Context context) {
+        private NetworkIPScanner(Context context) {
             mContextRef = new WeakReference<>(context);
         }
 
@@ -60,7 +59,7 @@ public class IpScanner extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... voids)
         {
-            Log.d(TAG, "Let's sniff the network");
+            Log.i(TAG, "Let's search the network...");
             try {
                 Context context = mContextRef.get();
 
@@ -74,23 +73,22 @@ public class IpScanner extends AppCompatActivity
                     int ipAddress = connectionInfo.getIpAddress(); //Get IP address of phone
                     String ipString = Formatter.formatIpAddress(ipAddress); //cast to string
 
-                    Log.d(TAG, "activeNetwork: " + String.valueOf(activeNetwork)); // Display the Info for this active Network
-                    Log.d(TAG, "IP Of Phone: " + String.valueOf(ipString)); // Display the IP of this phone
+                    Log.i(TAG, "activeNetwork: " + String.valueOf(activeNetwork)); // Display the Info for this active Network
+                    Log.i(TAG, "IP Of Phone: " + String.valueOf(ipString)); // Display the IP of this phone
                     String prefix = ipString.substring(0, ipString.lastIndexOf(".") + 1);
-                    Log.d(TAG, "prefix: " + prefix);    // Display the prefix
+                    Log.i(TAG, "prefix: " + prefix);    // Display the prefix
 
-                    //for (int i = 0; i < 255; i++)
                     for (int i =0; i < 255; i++)
                     {
-                        String testIp = prefix + String.valueOf(i); //IPs to be tested (192.168.1.98 --> 192.168.1.150)
+                        String testIp = prefix + String.valueOf(i); //IPs to be tested example (192.168.1.0 --> 192.168.1.254)
                         InetAddress address = InetAddress.getByName(testIp); //returns the localHost IP and name
 
                         String hostName = address.getCanonicalHostName(); //Gets the fully qualified domain name for this IP Address
                         if (address.isReachable(100))
                         {
                             Log.i(TAG, "Host: " + String.valueOf(hostName) + "(" + String.valueOf(testIp) + ") is reachable!");
-                            String IPAddesses = "- Host: " + String.valueOf(hostName) + "\n- IP Address:" + String.valueOf(testIp) +"\n";
-                            publishProgress((String) IPAddesses);
+                            String IPAddresses = "- Host: " + String.valueOf(hostName) + "\n- IP Address:" + String.valueOf(testIp) +"\n";
+                            publishProgress((String) IPAddresses);
                         }
                     }
                 }
@@ -124,7 +122,6 @@ public class IpScanner extends AppCompatActivity
     }
     /**********************************************************************************************/
 
-
     public void ReturnToAddCameraActivity(View view)
     {
         finish();
@@ -132,7 +129,7 @@ public class IpScanner extends AppCompatActivity
 
     public void IPScanner(View view)
     {
-        new NetworkSniffTask(this).execute();
+        new NetworkIPScanner(this).execute();
         button.setEnabled(false);
     }
 

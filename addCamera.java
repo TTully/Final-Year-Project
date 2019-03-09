@@ -30,7 +30,8 @@ public class addCamera extends AppCompatActivity {
     String InputPassword;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_camera);
 
@@ -40,8 +41,7 @@ public class addCamera extends AppCompatActivity {
 
         try
         {
-            openDatabase(); // open (create if needed) database
-            CreateTable();  // create table
+            openDatabase(); // open the database
             db.close();     // make sure to release the DB
             Log.i("Database", "- All Done!\n");
         }
@@ -93,7 +93,6 @@ public class addCamera extends AppCompatActivity {
     };
     /**********************************************************************************************/
 
-
     public void UpdateDatabase(View view)
     {
         //Retrieve the most recent data entered into the editText fields and cast to a (string)
@@ -104,8 +103,8 @@ public class addCamera extends AppCompatActivity {
 
         try
         {
-            openDatabase();      // open (create if needed) database
-            insertData();        // insert data
+            openDatabase();     // open the database
+            insertData();       // insert data
             db.close();         // make sure to release the DB
             Toast.makeText(this, "Camera Added", Toast.LENGTH_SHORT).show();
         }
@@ -118,6 +117,7 @@ public class addCamera extends AppCompatActivity {
     }
 
     /**********************************************************************************************/
+
     private void openDatabase()
     {
         try
@@ -141,36 +141,10 @@ public class addCamera extends AppCompatActivity {
     }
     /**********************************************************************************************/
 
-    private void CreateTable()
+    private void insertData()
     {
-        db.beginTransaction();
         try
         {
-            // create table
-            db.execSQL("create table if not exists results ("
-                    + " recID integer PRIMARY KEY autoincrement, "
-                    + " Name  TEXT, " + " IPAddress TEXT, " + " Username TEXT, " + " Password TEXT);  ");
-            // commit your changes
-            db.setTransactionSuccessful();
-
-            Log.i("\nDatabase", "- Table was created");
-        }
-
-        catch (SQLException e1)
-        {
-            Log.e("\n#Error:", "Creating Table: " + e1.getMessage());
-            finish();
-        }
-
-        finally
-        {
-            db.endTransaction();
-        }
-    }
-
-    /*******************************************************************************************/
-    private void insertData() {
-        try {
             // ContentValues is an Android dynamic row-like container
             ContentValues initialValues = new ContentValues();
             initialValues.put("Name", InputName);
@@ -179,9 +153,7 @@ public class addCamera extends AppCompatActivity {
             initialValues.put("Password", InputPassword);
 
             int rowPosition = (int) db.insert("results", "Name", initialValues);
-
             Log.i("\nDatabase", "- Data Inserted to Database Successfully: " + rowPosition);
-
         }
 
         catch (Exception e)
