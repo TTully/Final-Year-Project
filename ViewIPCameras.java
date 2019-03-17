@@ -1,32 +1,48 @@
+/*
+This project uses an Unofficial VLC Android SDK pushed to JCenter.
+https://wiki.videolan.org/LibVLC/#libVLC_on_Android
+*/
 package com.example.project;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.widget.MediaController;
-import android.widget.VideoView;
+import android.view.Gravity;
+import android.view.SurfaceView;
+import android.widget.Toast;
+import org.videolan.libvlc.IVLCVout;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
-public class ViewIPCameras extends Activity {
-
-    // Declare variables
-    ProgressDialog pDialog;
-    VideoView videoview;
-
-    // Insert your Video URL
-    String VideoURL;
-    String VideoURLStart = "rtsp://";
-    String VideoUrlEnd=":554/12";
+public class ViewIPCameras extends Activity implements IVLCVout.Callback {
+    public final static String TAG = "ViewIpCameras";
+    String RTSP_URL;
+    String URL_Start = "rtsp://";
+    String Url_End=":554/12";
+    private SurfaceView mSurface;
+    private LibVLC libvlc;
+    private MediaPlayer mMediaPlayer = null;
+    public int mVideoWidth;
+    public int mVideoHeight;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_ipcameras);
-        videoview = (VideoView) findViewById(R.id.VideoView);
+
+        mSurface = (SurfaceView) findViewById(R.id.surface);
+
+        // Get the width and height of the device the app is running on
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        mVideoHeight= displayMetrics.heightPixels;
+        mVideoWidth = displayMetrics.widthPixels;
 
         // Get the Intent continuing the Bundle sent from MainActivity
         Intent myLocalIntent= getIntent();
@@ -37,44 +53,128 @@ public class ViewIPCameras extends Activity {
         String IP = BundleReceived.getString("ip");
 
         //Video URL with the IP  address sent across
-        VideoURL = VideoURLStart+IP+VideoUrlEnd;
-
-
-        // Create a progressbar
-        pDialog = new ProgressDialog(ViewIPCameras.this);
-        // Set progressbar title
-        pDialog.setTitle("Loading Live Feed ");
-        // Set progressbar message
-        pDialog.setMessage("Buffering...");
-        pDialog.setIndeterminate(false);
-        pDialog.setCancelable(false);
-        // Show progressbar
-        pDialog.show();
-
-        try {
-            // Start the MediaController
-            MediaController mediacontroller = new MediaController(
-                    ViewIPCameras.this);
-            mediacontroller.setAnchorView(videoview);
-
-            Uri stream = Uri.parse(VideoURL);
-            videoview.setMediaController(mediacontroller);
-            videoview.setVideoURI(stream);
-            videoview.requestFocus();
-        }
-        catch (Exception e)
-        {
-            Log.e("#Error: ", e.getMessage());
-            e.printStackTrace();
-        }
-
-        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            // Close the progress bar and play the video
-            public void onPrepared(MediaPlayer mp) {
-                pDialog.dismiss();
-                videoview.start();
-            }
-        });
+        RTSP_URL = URL_Start+IP+Url_End;
     }
+
+    /**********************************************************************************************/
+    @Override
+    protected void onResume() {
+        super.onResume();
+        createPlayer(RTSP_URL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releasePlayer();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
+    }
+    /**********************************************************************************************/
+
+    //Creates MediaPlayer and plays video
+    private void createPlayer(String media)
+    {
+        try
+        {
+            if (media.length() > 0)
+            {
+
+                Toast toast = Toast.makeText(this, media, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0,
+                        0);
+                toast.show();
+            }
+            ArrayList<String> options = new ArrayList<>();
+            options.add("-vvv");
+            options.add("--network-caching=500");
+            options.add("--aout=opensles");
+
+            libvlc = new LibVLC(this,options);
+
+            // Creating media player
+            mMediaPlayer = new MediaPlayer(libvlc);
+            mMediaPlayer.setEventListener(mPlayerListener);
+
+            // Seting up video output
+            final IVLCVout vout = mMediaPlayer.getVLCVout();
+            vout.setVideoView(mSurface);
+            vout.addCallback(this);
+            vout.attachViews();
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Error in creating player!", Toast
+                    .LENGTH_LONG).show();
+        }
+    }
+
+    /**********************************************************************************************/
+    private void releasePlayer()
+    {
+        if (libvlc == null)
+            return;
+        mMediaPlayer.stop();
+        final IVLCVout vout = mMediaPlayer.getVLCVout();
+        vout.removeCallback(this);
+        vout.detachViews();
+        libvlc.release();
+        libvlc = null;
+
+        mVideoWidth = 0;
+        mVideoHeight = 0;
+    }
+
+
+    @Override
+    public void onSurfacesCreated(IVLCVout vout)
+    {
+        Media media = new Media(libvlc, Uri.parse(RTSP_URL));
+        mMediaPlayer.setMedia(media);
+        mMediaPlayer.setAspectRatio("16:9");
+        mMediaPlayer.getVLCVout().setWindowSize(mVideoWidth,mVideoHeight);
+        mMediaPlayer.play();
+
+    }
+
+    @Override
+    public void onSurfacesDestroyed(IVLCVout vout) {
+
+    }
+
+    /**********************************************************************************************/
+    private MediaPlayer.EventListener mPlayerListener = new MyPlayerListener(this);
+
+    private static class MyPlayerListener implements MediaPlayer.EventListener
+    {
+        private WeakReference<ViewIPCameras> mOwner;
+
+        public MyPlayerListener(ViewIPCameras owner)
+        {
+            mOwner = new WeakReference<ViewIPCameras>(owner);
+        }
+
+        @Override
+        public void onEvent(MediaPlayer.Event event)
+        {
+            ViewIPCameras player = mOwner.get();
+
+            switch (event.type)
+            {
+                case MediaPlayer.Event.EndReached:
+                    Log.d(TAG, "Media Player End Reached");
+                    player.releasePlayer();
+                    break;
+                case MediaPlayer.Event.Playing:
+                case MediaPlayer.Event.Paused:
+                case MediaPlayer.Event.Stopped:
+                default:
+                    break;
+            }
+        }
+    }
+    /**********************************************************************************************/
 }
