@@ -1,7 +1,7 @@
 # Final-Year-Project
 Final Year Home Security Project 
 
-This project/Repository contains the code for my Android App, Webserver, Webpages etc
+This project/Repository contains the code for my Android App, Webserver and my Webpages.
 This project uses a variety of different coding languages like java, python, javascript and html.
 
 The android App allows the user to add there RTSP IP cameras to the app by entering the details into a database, by entering a name for the 
