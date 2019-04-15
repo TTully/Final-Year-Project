@@ -1,3 +1,11 @@
+/**
+ * Author:  Thomas Tully
+ * Published: 17/03/19
+ * This App was designed for my final year of college as part of my Final year project.
+ * Any code that that i did not write and have found useful for my project i have referenced
+ * in the "README" file attached to this project.
+ */
+
 package com.example.project;
 
 import android.content.Intent;
@@ -16,7 +24,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -202,7 +209,7 @@ public class MainActivity extends AppCompatActivity
         {
             String mySQL = "select * from results";
             Cursor c1 = db.rawQuery(mySQL,null);
-            IPcameras= getCameras(c1);
+            IPcameras = getCameras(c1);
         }
         catch (Exception e)
         {
@@ -240,7 +247,7 @@ public class MainActivity extends AppCompatActivity
 
     /**********************************************************************************************/
 
-    public void StreamIpCameras(View view)
+    public void StreamIpCam1(View view)
     {
         // Create Intent to call Second Activity
         Intent intent = new Intent(this, ViewIPCameras.class);
@@ -248,15 +255,26 @@ public class MainActivity extends AppCompatActivity
         //Create a Bundle (MAP) container to ship data
         Bundle DataToSend = new Bundle();
 
-        if (rowCount ==1) {
-            DataToSend.putString("name", IPcameras.get(0).getName());
-            DataToSend.putString("ip", IPcameras.get(0).getIp());
-        }
-        else
-        {
-            DataToSend.putString("name", IPcameras.get(1).getName());
-            DataToSend.putString("ip", IPcameras.get(1).getIp());
-        }
+        DataToSend.putString("name", IPcameras.get(0).getName());
+        DataToSend.putString("ip", IPcameras.get(0).getIp());
+
+        //attach the container to the intent
+        intent.putExtras(DataToSend);
+
+        //starts the activity
+        startActivity(intent);
+    }
+
+    public void StreamIpCam2(View view)
+    {
+        // Create Intent to call Second Activity
+        Intent intent = new Intent(this, ViewIPCameras.class);
+
+        //Create a Bundle (MAP) container to ship data
+        Bundle DataToSend = new Bundle();
+
+        DataToSend.putString("name", IPcameras.get(1).getName());
+        DataToSend.putString("ip", IPcameras.get(1).getIp());
 
         //attach the container to the intent
         intent.putExtras(DataToSend);
