@@ -23,7 +23,9 @@ def record_video():
     IPCameraCapture = cv2.VideoCapture("rtsp://192.168.1.110:554/12") # Capture feed from camera
     # VideoWriter(Filename.Type, video type, frames per second, resolution)
     # Screen resolution from the stream must match the screen resolution u set for the output!
-    output = cv2.VideoWriter('MotionDetected.avi', fourcc, 25.0, (640, 480))
+    DateTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    video = DateTime + ".avi"
+    output = cv2.VideoWriter(video, fourcc, 25.0, (640, 480))
 
     print("Motion Detected! Starting recording...")
     #print("Time = %d" % time.time())
@@ -38,7 +40,6 @@ def record_video():
 
     output.release()
     IPCameraCapture.release()
-    #send_email(subject, msg)
 
 
 
