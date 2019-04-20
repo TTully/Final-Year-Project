@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+ <html>
+  <head>
+     <title>Project</title>
+     <meta charset="utf-8" />
+     <link rel="stylesheet" href="/stylesheets/vxgplayer.css" />
+     <script type="text/javascript" src="/javascripts/vxgplayer-1.8.51.min.js"></script>
+	 	<style>
+		.content-absolute{
+			top: 0px;
+			padding: 0px;
+			margin: 0px;
+			height: 100%;
+		}
+
+		.content{
+			width: 100% !important;
+			height: 100%;
+			padding: 0px;
+			top: -25px;
+			text-align: center;
+		}
+
+	</style>
+  </head>
+     <body>
+	   <p>My Ip Cameras</p>
+	   	<div class="content-absolute">
+		  <div class="content">
+		   <div
+		   class="vxgplayer"
+		   id="vxg_media_player1"
+		   width="640"
+		   height="480"
+		   url="rtsp://192.168.1.110:554/12"
+		   nmf-src="/javascripts/pnacl/Release/media_player.nmf"
+		   nmf-path="media_player.nmf"
+		   useragent-prefix="MMP/3.0"
+		   latency="10000"
+		   autohide="2"
+		   volume="0.0"
+		   avsync
+		   autostart
+		   controls
+		   mute
+		   aspect-ratio
+		   aspect-ratio-mode="1"
+		   auto-reconnect
+		   connection-timeout="5000"
+		   connection-udp="0"
+		   custom-digital-zoom>
+		   </div>
+		   <div
+		   class="vxgplayer"
+		   id="vxg_media_player2"
+		   width="640"
+		   height="360"
+		   url="rtsp://192.168.1.121:554/12"
+		   nmf-src="/javascripts/pnacl/Release/media_player.nmf"
+		   nmf-path="media_player.nmf"
+		   useragent-prefix="MMP/3.0"
+		   latency="10000"
+		   autohide="2"
+		   volume="0.0"
+		   avsync
+		   autostart
+		   controls
+		   mute
+		   aspect-ratio
+		   aspect-ratio-mode="1"
+		   auto-reconnect
+		   connection-timeout="5000"
+		   connection-udp="0"
+		   custom-digital-zoom>
+		   </div>
+		 </div>
+	   </div>
+	    <script>
+			var player = vxgplayer('vxg_media_player1');
+			var player = vxgplayer('vxg_media_player2');
+		</script>
+    </body>
+ </html>
