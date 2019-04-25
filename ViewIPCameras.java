@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 import android.widget.Toast;
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -36,6 +37,7 @@ public class ViewIPCameras extends Activity implements IVLCVout.Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_ipcameras);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mSurface = (SurfaceView) findViewById(R.id.surface);
 
         // Get the width and height of the device the app is running on
