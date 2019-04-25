@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  </head>
+<body class="background">
+ <div class="row center box">
+   <div class = "col-md-4 col-md-offset-4 bg-grey">
+     <h1 class="text-centre"> Sign In </h1>
+     {{#if hasErrors}}
+      <div class "alert alert-danger">
+        {{# each messages}}
+          <p>{{this}}</p>
+        {{/each}}
+      </div>
+     {{/if}}
+     <form action ="/user/signin" method = "post">
+       <div class="form-group">
+         <label for="username">Username</label>
+         <input type="text" id="username" name ="username" class= "form-control">
+       </div>
+       <div class="form-group">
+         <label for="password">Password</label>
+         <input type="password" id="password" name ="password" class= "form-control">
+       </div>
+       <input type="hidden" name ="_csrf" value="{{ csrfToken}}">
+        <div class="text-centre">
+         <button type="submit" class ="button">Submit</button>
+       </div>
+     </form>
+   </div>
+ </div>
+</body>
+</html>

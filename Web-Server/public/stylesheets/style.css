@@ -1,8 +1,43 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+.bg-grey {
+  background-color: #E6E6FA;
+  border-style: solid;
+  border-width: medium;
+  opacity: 0.75;
+}
+
+.bg-red {
+    background-color: red;
+}
+
+.center {
+    justify-content: center;
+}
+
+.box {
+  margin: 20px;
+}
+
+.text-centre {
+    text-align: center;
+}
+
+.background {
+  height: 100vh;
+  padding:0;
+  margin:0;
+  background-image: url("/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.button {
+  margin-bottom: 15px;
 }

@@ -16,15 +16,14 @@
 		.content{
 			width: 100% !important;
 			height: 100%;
-			padding: 0px;
+			padding: 30px;
 			top: -25px;
 			text-align: center;
 		}
 
 	</style>
   </head>
-     <body>
-	   <p>My Ip Cameras</p>
+     <body class="background">
 	   	<div class="content-absolute">
 		  <div class="content">
 		   <div
@@ -32,7 +31,7 @@
 		   id="vxg_media_player1"
 		   width="640"
 		   height="480"
-		   url="rtsp://192.XXX.X.XXX:554/12"
+		   url="rtsp://192.168.1.110:554/12"
 		   nmf-src="/javascripts/pnacl/Release/media_player.nmf"
 		   nmf-path="media_player.nmf"
 		   useragent-prefix="MMP/3.0"
@@ -55,7 +54,7 @@
 		   id="vxg_media_player2"
 		   width="640"
 		   height="360"
-		   url="rtsp://192.XXX.X.XXX:554/12"
+		   url="rtsp://192.168.1.121:554/12"
 		   nmf-src="/javascripts/pnacl/Release/media_player.nmf"
 		   nmf-path="media_player.nmf"
 		   useragent-prefix="MMP/3.0"
@@ -73,6 +72,9 @@
 		   connection-udp="0"
 		   custom-digital-zoom>
 		   </div>
+       <form action="/logout" method="get">
+        <button type="submit">Sign out</button>
+      </form>
 		 </div>
 	   </div>
 	    <script>
